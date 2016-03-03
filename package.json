@@ -1,0 +1,26 @@
+{
+  "name": "fiss-lint-csslint",
+  "version": "1.0.0",
+  "description": "a css linter plugin of fiss based on csslint",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "htts://github.com/fiss-plugins/fiss-lint-csslint.git"
+  },
+  "keywords": [
+    "csslint",
+    "linter",
+    "css",
+    "fiss-lint-csslint",
+    "lint"
+  ],
+  "author": "zhangyihua",
+  "license": "MIT",
+  "dependencies": {
+    "colors": "^1.1.2",
+    "csslint": "^0.10.0"
+  }
+}
