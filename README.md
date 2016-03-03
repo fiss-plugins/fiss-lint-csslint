@@ -43,6 +43,6 @@ fis.match('css/*.css', {
 
 ```
 
-`csslintConf.rules` 是对 csslint 的配置。规则参见[csslint rules](https://github.com/CSSLint/csslint/wiki/Rules)。
+`csslintConf.rules` 是对 csslint 的规则配置。规则详细请参见[csslint rules](https://github.com/CSSLint/csslint/wiki/Rules)。
 
-`eslintConf.ignore`： 一个数组，配置应该忽略掉的文件，数组成员为文件的匹配模式，为 String 或 RegExp 类型。
+`csslintConf.ignore`： 一个数组，配置应该忽略掉的文件，数组成员为文件的匹配模式为 String 或 RegExp 类型。
