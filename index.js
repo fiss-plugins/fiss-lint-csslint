@@ -90,7 +90,8 @@ module.exports = function(content, file, conf) {
     var csslint = require('csslint').CSSLint;
 
     var rules = conf.rules || {};
-    rules = Object.assign(defRules, rules);
+    var assign = require('mixin-deep');
+    rules = assign(defRules, rules);
 
     var result = csslint.verify(content, rules);
 
