@@ -22,5 +22,12 @@
   "dependencies": {
     "colors": "^1.1.2",
     "csslint": "^0.10.0"
+  },
+  "defConf": {
+    "rules": {
+      "known-properties": 2,
+      "empty-rules": 1,
+      "duplicate-properties": 1
+    }
   }
 }

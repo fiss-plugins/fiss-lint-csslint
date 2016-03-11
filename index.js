@@ -3,47 +3,47 @@
  */
 
 
- /**
-  * eslint ignore
-  * @param  {Object} fiel  An instence of File class, which defined in fis.
-  * @param  {Object} conf  The lint conf.
-  * @return {Boolean}      If current subpath matchs one of ignore pattern, return true.
-  */
- function ignore(file, conf) {
- 	var ignored = [];
+/**
+ * eslint ignore
+ * @param  {Object} fiel  An instence of File class, which defined in fis.
+ * @param  {Object} conf  The lint conf.
+ * @return {Boolean}      If current subpath matchs one of ignore pattern, return true.
+ */
+function ignore(file, conf) {
+    var ignored = [], ignoreFiles = conf.ignoreFiles;
 
- 	if (conf.ignore) {
- 		if (typeof conf.ignore === 'string' || fis.util.is(conf.ignore, 'RegExp')) {
- 		  ignored = [conf.ignore];
- 		} else if (fis.util.is(conf.ignore, 'Array')) {
- 		  ignored = conf.ignore;
- 		}
- 		delete conf.ignore;
- 	}
- 	if (ignored) {
- 		for (var i = 0, len = ignored.length; i < len; i++) {
- 		  if (fis.util.filter(file.subpath, ignored[i])) {
- 		    return true;
- 		  }
- 		}
- 	}
+    if (ignoreFiles) {
+        if (typeof ignoreFiles === 'string' || fis.util.is(ignoreFiles, 'RegExp')) {
+            ignored = [ignoreFiles];
+        } else if (fis.util.is(ignoreFiles, 'Array')) {
+            ignored = ignoreFiles;
+        }
+        delete conf.ignoreFiles;
+    }
+    if (ignored) {
+        for (var i = 0, len = ignored.length; i < len; i++) {
+            if (fis.util.filter(file.subpath, ignored[i])) {
+                return true;
+            }
+        }
+    }
 
- 	return false;
+    return false;
 }
 
 /**
- * [formatter description]
+ * formmatter message print
  * @param  {Array} messages   The lint result messages.
  * @example
- * { 
- * 	  type: 'warning',
+ * {
+ *    type: 'warning',
  *    line: 6,
  *    col: 6,
  *    message: 'The universal selector (*) is known to be slow.',
  *    evidence: 'html * {',
- *	  rule:{ 
- * 		id: 'universal-selector',
- *   	name: 'Disallow universal selector',
+ *    rule:{
+ *      id: 'universal-selector',
+ *      name: 'Disallow universal selector',
  *      desc: 'The universal selector (*) is known to be slow.',
  *      browsers: 'All',
  *      init: [Function]
@@ -51,39 +51,52 @@
  * }
  * @return {String} report    A formatted report.
  */
- function formatter(fileId, messages) {
- 	var colors = require('colors');
- 	var error = warning = 0;
- 	var report = messages.map(function(item, index) {
- 		var type;
+function formatter(messages) {
+    var colors = require('colors');
+    var error = warning = 0;
+    var report = messages.map(function(item, index) {
+        var type, info;
+        if (item.type == "warning") {
+            type = item.type.yellow;
+            ++warning;
+        } else {
+            type = item.type.red;
+            ++error;
+        }
 
- 		if (item.type == "warning") {
- 			type = item.type.yellow;
- 			++ warning;
- 		} else {
- 			type = item.type.red;
- 			++ error;
- 		}
+        // info layout
+        // @example
+        // ------------
+        // src/css/test.css:
+        //  8:2  error  Unknown property 'hegiht'.  hegiht: 500px;
+        info = '\n  ' + item.line + ':' + item.col + '  ' + type + '  ' + item.message + '  ' + item.evidence.gray;
+        return info;
+    });
 
- 		return `\n${fileId}: \n${++index}:  ${type}  (${item.line} line, ${item.col} col)  \n${item.message} \n${item.evidence.gray}`;
- 	});
- 	var statis = `(${error} error, ${warning} warning)`.red
- 	return `${report.join('\n')} \n\n${statis}`;
- }
+    // problems show
+    // 3 problems  (1 errors, 2 warnings)
+    var total = error+warning;
+    var statis = '\n\n  '+ total + ' problems  (' + error + ' errors, ' + warning + ' warnings)';
+
+    return report.join('\n') + statis.yellow.bold;
+}
 
 
 module.exports = function(content, file, conf) {
-	if (ignore(file, conf)) {
-		return;
-	}
+    if (ignore(file, conf)) {
+        return;
+    }
+    var defRules = require('./package.json').defConf.rules || {};
+    var csslint = require('csslint').CSSLint;
 
-	var csslint = require('csslint').CSSLint;
-	var rules = conf.rules || {};
-	var result = csslint.verify(content, rules);
+    var rules = conf.rules || {};
+    rules = Object.assign(defRules, rules);
 
-	if (!result.messages.length) {
-		fis.log.info(file.id, 'all pass!'.green);
-	} else {
-		fis.log.info(formatter(file.id, result.messages));
-	}
+    var result = csslint.verify(content, rules);
+
+    if (result.messages && result.messages.length) {
+        fis.log.info(file.id, formatter(result.messages));
+    } else {
+        fis.log.info(file.id, 'all pass!'.green);
+    }
 }
