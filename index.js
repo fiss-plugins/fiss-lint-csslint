@@ -96,8 +96,8 @@ module.exports = function(content, file, conf) {
     var result = csslint.verify(content, rules);
 
     if (result.messages && result.messages.length) {
-        fis.log.info(file.id, formatter(result.messages));
+        fis.log.info(file.id, ' fail!'.red, formatter(result.messages));
     } else {
-        fis.log.info(file.id, 'all pass!'.green);
+        fis.log.info(file.id, ' pass!'.green);
     }
 }
