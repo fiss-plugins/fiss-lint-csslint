@@ -52,7 +52,6 @@ function ignore(file, conf) {
  * @return {String} report    A formatted report.
  */
 function formatter(messages) {
-    var colors = require('colors');
     var error = warning = 0;
     var report = messages.map(function(item, index) {
         var type, info;
@@ -86,6 +85,7 @@ module.exports = function(content, file, conf) {
     if (ignore(file, conf)) {
         return;
     }
+
     var defRules = require('./package.json').defConf.rules || {};
     var csslint = require('csslint').CSSLint;
 
