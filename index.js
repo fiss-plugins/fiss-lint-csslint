@@ -68,7 +68,7 @@ function formatter(messages) {
         // ------------
         // src/css/test.css:
         //  8:2  error  Unknown property 'hegiht'.  hegiht: 500px;
-        info = '\n  ' + item.line + ':' + item.col + '  ' + type + '  ' + item.message + '  ' + item.evidence.gray;
+        info = '\n  ' + item.line + ':' + item.col + '  ' + type + '  ' + item.message + '  ' + item.evidence.red;
         return info;
     });
 
