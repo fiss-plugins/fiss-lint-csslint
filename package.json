@@ -1,6 +1,6 @@
 {
   "name": "fiss-lint-csslint",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "a css linter plugin of fiss based on csslint",
   "main": "index.js",
   "scripts": {
